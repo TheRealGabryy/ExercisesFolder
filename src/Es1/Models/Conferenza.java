@@ -5,6 +5,7 @@ import java.time.LocalTime;
 
 public class Conferenza extends Eventi{
     private String relatore;
+    private double prezzoTotale;
     public Conferenza(String nomeEvento, LocalDate data, LocalTime ora, double prezzoBiglietto, LocalTime durata, String relatore) {
         super(nomeEvento, data, ora, prezzoBiglietto, durata);
         this.relatore = relatore;
@@ -20,11 +21,11 @@ public class Conferenza extends Eventi{
         System.out.println("Relatore: " + getRelatore());
     }
 
-    public double calcolaPrezzoTotale(int partecipanti, boolean isGruppoStudenti) {
+    public void calcolaPrezzoTotale(int partecipanti, boolean isGruppoStudenti) {
         if (isGruppoStudenti) {
-            return (getPrezzoBiglietto() * partecipanti) * 0.85;
+            prezzoTotale = getPrezzoBiglietto() * partecipanti * 0.85;
         } else {
-            return getPrezzoBiglietto() * partecipanti;
+            prezzoTotale = getPrezzoBiglietto() * partecipanti;
         }
     }
 
@@ -34,5 +35,9 @@ public class Conferenza extends Eventi{
 
     public void setRelatore(String relatore) {
         this.relatore = relatore;
+    }
+
+    public double getPrezzoTotale() {
+        return prezzoTotale;
     }
 }

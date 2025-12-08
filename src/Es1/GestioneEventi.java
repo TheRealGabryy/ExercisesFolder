@@ -27,12 +27,26 @@ partecipanti).
 chiamare il metodo calcolaPrezzoTotale() su oggetti di tipo diverso.
 */
 
+import Es1.Models.Concerto;
+import Es1.Models.Conferenza;
+import Es1.Models.MostraArte;
 import Global.Menu;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class GestioneEventi {
     public static final Scanner input = new Scanner(System.in);
+    public static String nomeEvento;
+    public static LocalDate dataEvento;
+    public static LocalTime oraEvento;
+    public static LocalTime durata;
+    public static double prezzo;
+
+    public static final int minPartecipanti = 1; public static final int maxPartecipanti = 49;
     public static String[] opzionigestioneEventi = {
             "Crea Concerto",
             "Crea Conferenza",
@@ -40,35 +54,119 @@ public class GestioneEventi {
             "Elimina Evento",
             "Fine"
     };
+    public static void creaEveneto() {
 
-    public static void creaEveneto() { // metodo generale per la creazione degli attributi generali dell'evento
+        // Nome
         System.out.println("Inserisci il nome dell'evento: ");
-        System.out.println("Inserisci la data dell'evento (GG:MM:YYYY)");
-        System.out.println("Insersci l'ora dell'evento (HH:mm)");
-        System.out.println("Inserisci il prezzo del biglietto");
+        do {
+            System.out.print("-> ");
+            nomeEvento = input.next();
+            if (checkNome(nomeEvento)) {
+                System.out.println("Nome non valido. Solo lettere.");
+            }
+        } while (checkNome(nomeEvento));
+
+        // Data
+        dataEvento = leggiData();
+
+        // Ora
+        oraEvento = leggiOra();
+
+        // Input del prezzo: ho usato un ciclo diverso perchè sto iniziando ad usare questo tipo di scrittura, più stabile
+        while (true) {
+            System.out.print("Inserisci il prezzo del biglietto: ");
+            try {
+                prezzo = input.nextDouble();
+                if (prezzo < 0) {
+                    System.out.println("Il prezzo non puo essere negativo.");
+                    continue;
+                }
+                break;
+            } catch (Exception e) {
+                System.out.println("Inserisci un numero valido.");
+                input.nextLine(); //clear del buffer di input
+            }
+        }
+
+        //Inserimento della durata, in ore e minuti.
+        durata = leggiOra();
     }
 
-    public static void creaConcerto() {
-        creaEveneto();
-        System.out.println("Inserisci il nome dell'artista");
+    public static String nomeArtista;
 
-        // TODO: controllare se l'ora è di sera, se lo è, mettere serale a true;
+    public static void creaConcerto() {
+        creaEveneto(); //creo l'evento generale
+        System.out.println("Inserisci il nome dell'artista");
+        do {
+            System.out.print("-> ");
+            nomeArtista = input.next(); //inserisco la variabile che manca: l'artista
+            if (checkNome(nomeArtista)) {
+                System.out.println("Nome non valido. Solo lettere.");
+            }
+        } while (checkNome(nomeArtista));
+        Concerto c = new Concerto(nomeEvento, dataEvento, oraEvento, prezzo, durata, nomeArtista);
+        boolean serale = oraEvento.isAfter(LocalTime.of(19,59));
+
+        //NUMERO PARTECIPANTI ALL'EVENTO
+        int partecipanti = inserisciPartecipanti();
+        if (serale) {
+            System.out.println("Hai diritto ad uno sconto per evento serale");
+            c.calcolaPrezzoTotale(partecipanti, true);
+        } else {
+            System.out.println("L'evento non è serale, prezzo normale.");
+            c.calcolaPrezzoTotale(partecipanti, false);
+        }
+
+        System.out.println("Prezzo totale dell'evento: " + c.getPrezzoTotale());
 
     }
 
     public static void creaConferenza() {
         creaEveneto();
+        String relatore;
         System.out.println("Inserisci il nome del referente");
+        do {
+            System.out.print("-> ");
+            relatore = input.next();
+            if (checkNome(relatore)) {
+                System.out.println("Nome non valido. Solo lettere.");
+            }
+        } while (checkNome(relatore));
+
+        Conferenza conf = new Conferenza(nomeEvento, dataEvento, oraEvento, prezzo, durata, relatore);
+        int partecipanti = inserisciPartecipanti();
+        if (partecipanti > 15) {
+            System.out.println("Hai diritto ad uno sconto per aver portato un grippo studenti");
+            conf.calcolaPrezzoTotale(partecipanti, true); //true perchè con 15 partecipanti facciamo che è un gruppo studenti
+        } else {
+            System.out.println("Nessuno sconto per studenti");
+            conf.calcolaPrezzoTotale(partecipanti, false);
+        }
+
+        System.out.println("Prezzo totale dell'evento: " + conf.getPrezzoTotale());
     }
 
     public static void creaMostra() {
         creaEveneto();
+        String pittore;
         System.out.println("inserisci il nome del pittore");
+        do {
+            System.out.print("-> ");
+            pittore = input.next();
+            if (checkNome(pittore)) {
+                System.out.println("Nome non valido. Solo lettere.");
+            }
+        } while (checkNome(pittore));
 
+        MostraArte m = new MostraArte(nomeEvento, dataEvento, oraEvento, prezzo, durata, pittore);
+        System.out.println("Inserisci quanti partecipanti ci sono all'evento");
+        int partecipanti = inserisciPartecipanti();
+        m.calcolaPrezzoTotale(partecipanti);
+        System.out.println("Prezzo totale dell'evento: " + m.getPrezzoTotale());
     }
 
     public static void eliminaEvento() {
-        creaEveneto();
+
     }
 
     public static void gestioneEventi() { //entry point gestione eventi
@@ -113,4 +211,60 @@ public class GestioneEventi {
         } while (!fine);
 
     }
+
+    public static boolean checkNome(String nome) {
+        for (int i = 0; i < nome.length(); i++) {
+            if (!Character.isLetter(nome.charAt(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static LocalDate leggiData() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        while (true) {
+            System.out.print("Inserisci la data dell'evento (gg/mm/yyyy): ");
+
+            String inputData = input.next();
+
+            try {
+                return LocalDate.parse(inputData, formatter);
+            } catch (Exception e) {
+                System.out.println("Data non valida. Riprova.");
+            }
+        }
+    }
+
+    public static LocalTime leggiOra() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        while (true) {
+            System.out.print("Inserisci l'ora dell'evento (HH:mm): ");
+
+            String inputOra = input.next();
+
+            try {
+                return LocalTime.parse(inputOra, formatter);
+            } catch (Exception e) {
+                System.out.println("Ora non valida. Riprova.");
+            }
+        }
+    }
+
+    public static  int inserisciPartecipanti() {
+        System.out.println("Inserisci i partecipandi al concerto (1 - 49)");
+        int partecipanti;
+        do {
+            System.out.print("-> ");
+            partecipanti = input.nextInt();
+            if (partecipanti < minPartecipanti || partecipanti > maxPartecipanti) {
+                System.out.println("Inserisci un numero tra " + minPartecipanti + " e " + maxPartecipanti);
+            }
+        } while (partecipanti < minPartecipanti || partecipanti > maxPartecipanti);
+        return partecipanti;
+    }
+
+
 }

@@ -9,6 +9,7 @@ public class Eventi {
     private LocalTime ora;
     private double prezzoBiglietto;
     private LocalTime durata;
+    private double prezzoTotale;
 
     public Eventi(String nomeEvento, LocalDate data, LocalTime ora, double prezzoBiglietto, LocalTime durata) {
         this.nomeEvento = nomeEvento;
@@ -66,7 +67,7 @@ public class Eventi {
         System.out.println("Durata evento: h" + durata);
     }
 
-    public double calcolaPrezzoTotale(int partecipanti) {
-        return prezzoBiglietto * partecipanti;
+    public void calcolaPrezzoTotale(int partecipanti) {
+        prezzoTotale = prezzoBiglietto * partecipanti;
     }
 }

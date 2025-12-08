@@ -5,16 +5,17 @@ import java.time.LocalTime;
 
 public class Concerto extends Eventi{
     private String artista;
+    private double prezzoTotale;
     public Concerto(String nomeEvento, LocalDate data, LocalTime ora, double prezzoBiglietto, LocalTime durata, String artista) {
         super(nomeEvento, data, ora, prezzoBiglietto, durata);
         this.artista = artista;
     }
 
-    public double calcolaPrezzoTotale(int partecipanti, boolean isSerale) {
+    public void calcolaPrezzoTotale(int partecipanti, boolean isSerale) {
         if (isSerale) {
-            return (getPrezzoBiglietto() * partecipanti) * 0.85;
+            prezzoTotale = getPrezzoBiglietto() * partecipanti * 0.85;
         } else {
-            return getPrezzoBiglietto() * partecipanti;
+            prezzoTotale = getPrezzoBiglietto() * partecipanti;
         }
     }
 
@@ -34,5 +35,13 @@ public class Concerto extends Eventi{
 
     public void setArtista(String artista) {
         this.artista = artista;
+    }
+
+    public double getPrezzoTotale() {
+        return prezzoTotale;
+    }
+
+    public void setPrezzoTotale(double prezzoTotale) {
+        this.prezzoTotale = prezzoTotale;
     }
 }
