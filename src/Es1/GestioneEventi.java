@@ -29,13 +29,14 @@ chiamare il metodo calcolaPrezzoTotale() su oggetti di tipo diverso.
 
 import Es1.Models.Concerto;
 import Es1.Models.Conferenza;
+import Es1.Models.Eventi;
 import Es1.Models.MostraArte;
 import Global.Menu;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GestioneEventi {
@@ -45,6 +46,8 @@ public class GestioneEventi {
     public static LocalTime oraEvento;
     public static LocalTime durata;
     public static double prezzo;
+    public static ArrayList<Eventi> eventi = new ArrayList<>();
+
 
     public static final int minPartecipanti = 1; public static final int maxPartecipanti = 49;
     public static String[] opzionigestioneEventi = {
@@ -105,6 +108,7 @@ public class GestioneEventi {
             }
         } while (checkNome(nomeArtista));
         Concerto c = new Concerto(nomeEvento, dataEvento, oraEvento, prezzo, durata, nomeArtista);
+        eventi.add(c);
         boolean serale = oraEvento.isAfter(LocalTime.of(19,59));
 
         //NUMERO PARTECIPANTI ALL'EVENTO
@@ -134,6 +138,7 @@ public class GestioneEventi {
         } while (checkNome(relatore));
 
         Conferenza conf = new Conferenza(nomeEvento, dataEvento, oraEvento, prezzo, durata, relatore);
+        eventi.add(conf);
         int partecipanti = inserisciPartecipanti();
         if (partecipanti > 15) {
             System.out.println("Hai diritto ad uno sconto per aver portato un grippo studenti");
@@ -159,6 +164,7 @@ public class GestioneEventi {
         } while (checkNome(pittore));
 
         MostraArte m = new MostraArte(nomeEvento, dataEvento, oraEvento, prezzo, durata, pittore);
+        eventi.add(m);
         System.out.println("Inserisci quanti partecipanti ci sono all'evento");
         int partecipanti = inserisciPartecipanti();
         m.calcolaPrezzoTotale(partecipanti);
@@ -167,7 +173,27 @@ public class GestioneEventi {
 
     public static void eliminaEvento() {
 
+        if (eventi.isEmpty()) {
+            System.out.println("Nessun evento da eliminare.");
+            return;
+        }
+
+        System.out.println("Seleziona l'evento da eliminare:");
+        for (int i = 0; i < eventi.size(); i++) {
+            System.out.println((i + 1) + ") " + eventi.get(i).getNomeEvento());
+        }
+
+        int scelta;
+        do {
+            System.out.print("-> ");
+            scelta = input.nextInt();
+        } while (scelta < 1 || scelta > eventi.size());
+
+        eventi.remove(scelta - 1);
+
+        System.out.println("Evento eliminato.");
     }
+
 
     public static void gestioneEventi() { //entry point gestione eventi
         System.out.println("Esercizio gestione eventi");
