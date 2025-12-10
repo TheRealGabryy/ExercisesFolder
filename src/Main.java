@@ -1,3 +1,6 @@
+import Es1.GestioneEventi;
+import Global.Menu;
+
 import java.util.Scanner;
 
 public class Main {
@@ -16,6 +19,47 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         System.out.println("Esercizi GB");
         print();
+        boolean fine = false;
+        int chose = 0;
+        do {
+            Menu.printMenu("Main Menu", mainOpzioni);
+            try {
+                chose = sc.nextInt();
+            } catch (Exception e) {
+                System.out.println("Non hai inserito un intero");
+                sc.nextLine();
+                continue;
+            }
+            switch (chose) {
+                case 1:
+                    System.out.println("Esercizio gestione eventi");
+                    GestioneEventi.gestioneEventi();
+                    break;
+                case 2:
+                    System.out.println("Esercizio gestione biblioteca");
+
+                    break;
+                case 3:
+                    System.out.println("Esercizio gestione prodotti");
+                    break;
+                case 4:
+                    System.out.println("Esercizio gestione prenotazioni");
+                    break;
+                case 5:
+                    System.out.println("Esercizio gestione assistenti AI");
+                    break;
+                case 6:
+                    System.out.println("Tutti gli esercizi uno dieto l'altro");
+                    break;
+                case 7:
+                    System.out.println("Fine");
+                    fine = true;
+                    break;
+                default:
+                    System.out.println("Non hai inserito un'opzione valida");
+                    break;
+            }
+        } while (!fine);
 
 
 
