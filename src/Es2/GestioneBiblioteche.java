@@ -33,49 +33,79 @@ materiale.
 
 package Es2;
 
+import Es2.Models.*;
 import Global.Menu;
-
 import java.util.Scanner;
 
 public class GestioneBiblioteche {
+
     public static final Scanner input = new Scanner(System.in);
-    public static String[] opzionigestioneEventi = {
-            "Crea Concerto",
-            "Crea Conferenza",
-            "Crea Morstra Arte",
-            "Elimina Evento",
+
+    public static String[] opzioni = {
+            "Aggiungi Libro",
+            "Aggiungi Rivista",
+            "Visualizza Materiali",
+            "Presta materiale",
             "Fine"
     };
 
-    public static void gestioneBiblioteche() { //entry point gestione eventi
-        System.out.println("Esercizio gestione bibiloteca");
+    public static void gestioneBiblioteche() {
+
+        Biblioteca biblioteca = new Biblioteca();
         boolean fine = false;
-        int choice = 0;
 
-        do {
-            Menu.printMenu("Gestione Eventi Menu", opzionigestioneEventi);
+        while (!fine) {
+
+            Menu.printMenu("Gestione Biblioteca", opzioni);
+            int choice = input.nextInt();
+            input.nextLine();
+
             switch (choice) {
+
                 case 1:
-                    System.out.println("Hai scelto ");
+                    System.out.print("Titolo: ");
+                    String t = input.nextLine();
+                    System.out.print("Autore: ");
+                    String a = input.nextLine();
+                    System.out.print("Anno: ");
+                    int an = input.nextInt();
+                    System.out.print("Pagine: ");
+                    int p = input.nextInt();
+                    input.nextLine();
+                    biblioteca.aggiungiMateriale(new Libro(t, a, an, p));
                     break;
+
                 case 2:
-                    System.out.println("Hai scelto ");
+                    System.out.print("Titolo: ");
+                    String t2 = input.nextLine();
+                    System.out.print("Autore: ");
+                    String a2 = input.nextLine();
+                    System.out.print("Anno: ");
+                    int an2 = input.nextInt();
+                    System.out.print("Numero rivista: ");
+                    int nr = input.nextInt();
+                    input.nextLine();
+                    biblioteca.aggiungiMateriale(new Rivista(t2, a2, an2, nr));
                     break;
+
                 case 3:
-                    System.out.println("Hai scelto ");
+                    biblioteca.visualizzaMateriali();
                     break;
+
                 case 4:
-                    System.out.println("Hai scelto ");
+                    System.out.print("Inserisci indice materiale da prestare: ");
+                    int idx = input.nextInt();
+                    biblioteca.prestaMateriale(idx);
                     break;
+
                 case 5:
-                    System.out.println("Hai scelto ");
+                    fine = true;
                     break;
-                default: System.out.println("Non hai inserto un'opzione valida.");
 
-
+                default:
+                    System.out.println("Opzione non valida.");
             }
-        } while (!fine);
-
+        }
     }
-
 }
+
