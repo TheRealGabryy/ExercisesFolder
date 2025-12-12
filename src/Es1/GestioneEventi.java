@@ -209,6 +209,8 @@ public class GestioneEventi {
                 System.out.println("Errore nell'inserimento, riprova");
             }
         } while (scelta < 1 || scelta > eventi.size());
+
+        eventi.get(scelta).dettagliEvento();
     }
 
 
@@ -246,6 +248,10 @@ public class GestioneEventi {
                 case 5:
                     System.out.println("Visualizzazione eventi");
                     visualizzaEvento();
+                    break;
+                case 6:
+                    System.out.println("Fine");
+                    fine = true;
                     break;
                 default: System.out.println("Non hai inserto un'opzione valida.");
 
