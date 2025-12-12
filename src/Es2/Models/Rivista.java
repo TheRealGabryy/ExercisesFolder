@@ -1,9 +1,11 @@
 package Es2.Models;
 
-public class Rivista extends Materiale {
-    private int numeroRivista;
+import java.time.LocalDate;
 
-    public Rivista(String titolo, String autore, int annoPubblicazione, int numeroRivista) {
+public class Rivista extends Materiale {
+    private final int numeroRivista;
+
+    public Rivista(String titolo, String autore, LocalDate annoPubblicazione, int numeroRivista) {
         super(titolo, autore, annoPubblicazione);
         this.numeroRivista = numeroRivista;
     }

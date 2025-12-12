@@ -35,12 +35,17 @@ package Es2;
 
 import Es2.Models.*;
 import Global.Menu;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GestioneBiblioteche {
 
     public static final Scanner input = new Scanner(System.in);
-
+    public static final Biblioteca biblioteca = new Biblioteca();
     public static String[] opzioni = {
             "Aggiungi Libro",
             "Aggiungi Rivista",
@@ -49,9 +54,89 @@ public class GestioneBiblioteche {
             "Fine"
     };
 
-    public static void gestioneBiblioteche() {
+    public static void inserisciLibro() {
+        String titolo, autore;
+        LocalDate anno;
+        int pagine = 0;
+        System.out.print("Titolo: ");
+        do {
+            System.out.print("-> ");
+            titolo = input.nextLine();
+            if (checkInput(titolo)) {
+                System.out.print("Hai inserito un Titolo non valido. riprova.");
+            }
+        } while (checkInput(titolo));
+        System.out.print("Titolo inserito correttamente");
+        System.out.print("Autore: ");
+        do {
+            System.out.print("-> ");
+            autore = input.nextLine();
+            if (checkInput(autore)) {
+                System.out.print("Hai inserito un Autore");
+            }
+        } while (checkInput(autore));
+        System.out.print("Autore inserito Correttamente");
+        System.out.print("Anno: ");
+        anno = readDate();
 
-        Biblioteca biblioteca = new Biblioteca();
+        System.out.print("Pagine: ");
+        do {
+            System.out.print("-> ");
+            try {
+                pagine = input.nextInt();
+            } catch (Exception e) {
+                System.out.println("Non hai inserito un intero");
+                input.nextLine();
+                continue;
+            }
+            if (pagine < 1 || pagine > 10000) {
+                System.out.println("Non hai inserito un valore valido. riprova.");
+            }
+        } while (pagine < 1 || pagine > 10000);
+        biblioteca.aggiungiMateriale(new Libro(titolo, autore, anno, pagine));
+    }
+
+    public static void inserisciRivista() {
+        String titolo, autore;
+        LocalDate anno;
+        int nRivista = 0;
+        System.out.print("Titolo: ");
+        do {
+            System.out.print("-> ");
+            titolo = input.nextLine();
+            if (checkInput(titolo)) {
+                System.out.print("Non hai inserito il titolo della rivista correttamente, riprova.");
+            }
+        } while (checkInput(titolo));
+        System.out.print("Titolo inserito correttamente");
+        System.out.print("Autore: ");
+        do {
+            System.out.print("-> ");
+            autore = input.nextLine();
+            if (checkInput(autore)) {
+                System.out.print("Hai inserito un Autore non corretto, riprova.");
+            }
+        } while (checkInput(autore));
+        System.out.print("Anno: ");
+        anno = readDate();
+        System.out.print("Numero rivista: ");
+        do {
+            System.out.print("-> ");
+            try {
+                nRivista = input.nextInt();
+            } catch (Exception e) {
+                System.out.println("Non hai inserito un intero");
+                input.nextLine();
+                continue;
+            }
+            if (nRivista < 1 || nRivista > 10000) {
+                System.out.println("Non hai inserito un valore valido. riprova.");
+            }
+        } while (nRivista < 1 || nRivista > 10000);
+        biblioteca.aggiungiMateriale(new Rivista(titolo, autore, anno, nRivista));
+    }
+
+    public static void gestioneBiblioteche() {
         boolean fine = false;
 
         while (!fine) {
@@ -63,49 +148,72 @@ public class GestioneBiblioteche {
             switch (choice) {
 
                 case 1:
-                    System.out.print("Titolo: ");
-                    String t = input.nextLine();
-                    System.out.print("Autore: ");
-                    String a = input.nextLine();
-                    System.out.print("Anno: ");
-                    int an = input.nextInt();
-                    System.out.print("Pagine: ");
-                    int p = input.nextInt();
-                    input.nextLine();
-                    biblioteca.aggiungiMateriale(new Libro(t, a, an, p));
+                    System.out.println("Inserisci un libro");
+                    inserisciLibro();
                     break;
 
                 case 2:
-                    System.out.print("Titolo: ");
-                    String t2 = input.nextLine();
-                    System.out.print("Autore: ");
-                    String a2 = input.nextLine();
-                    System.out.print("Anno: ");
-                    int an2 = input.nextInt();
-                    System.out.print("Numero rivista: ");
-                    int nr = input.nextInt();
-                    input.nextLine();
-                    biblioteca.aggiungiMateriale(new Rivista(t2, a2, an2, nr));
+                    System.out.println("Inserisci rivista");
+                    inserisciRivista();
                     break;
 
                 case 3:
+                    System.out.println("Visualizza Materiali");
                     biblioteca.visualizzaMateriali();
                     break;
 
                 case 4:
+                    System.out.println("Presta materiale. Materiali:");
+                    biblioteca.visualizzaMateriali();
                     System.out.print("Inserisci indice materiale da prestare: ");
                     int idx = input.nextInt();
                     biblioteca.prestaMateriale(idx);
                     break;
 
                 case 5:
+                    System.out.println("Fine programma");
                     fine = true;
                     break;
-
                 default:
                     System.out.println("Opzione non valida.");
             }
         }
     }
+
+    public static boolean checkInput(String input) {
+        if (input.length() < 3) {
+            return true;
+        }
+        for (int i = 0; i < input.length(); i++) {
+            if (!Character.isLetter(input.charAt(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static LocalDate readDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate today = LocalDate.now();
+
+        while (true) {
+            System.out.print("Inserisci una data (dd/MM/yyyy): ");
+            String data = input.nextLine();
+
+            try {
+                LocalDate date = LocalDate.parse(data, formatter);
+
+                if (date.isBefore(today)) {
+                    return date; // success
+                } else {
+                    System.out.println("La data deve essere precedente a oggi.");
+                }
+
+            } catch (DateTimeParseException e) {
+                System.out.println("Formato non valido. Riprova.");
+            }
+        }
+    }
+
 }
 

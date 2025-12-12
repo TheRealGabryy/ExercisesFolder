@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Biblioteca {
 
-    private ArrayList<Materiale> materiali = new ArrayList<>();
+    private final ArrayList<Materiale> materiali = new ArrayList<>();
 
     public void aggiungiMateriale(Materiale materiale) {
         materiali.add(materiale);

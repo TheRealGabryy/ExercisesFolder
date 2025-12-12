@@ -1,11 +1,13 @@
 package Es2.Models;
 
+import java.time.LocalDate;
+
 public class Materiale {
     protected String titolo;
     protected String autore;
-    protected int annoPubblicazione;
+    protected LocalDate annoPubblicazione;
 
-    public Materiale(String titolo, String autore, int annoPubblicazione) {
+    public Materiale(String titolo, String autore, LocalDate annoPubblicazione) {
         this.titolo = titolo;
         this.autore = autore;
         this.annoPubblicazione = annoPubblicazione;
