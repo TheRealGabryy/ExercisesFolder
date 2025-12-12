@@ -55,6 +55,7 @@ public class GestioneEventi {
             "Crea Conferenza",
             "Crea Morstra Arte",
             "Elimina Evento",
+            "Visualizza Eventi",
             "Fine"
     };
     public static void creaEveneto() {
@@ -194,6 +195,22 @@ public class GestioneEventi {
         System.out.println("Evento eliminato.");
     }
 
+    public static void visualizzaEvento() {
+        if (eventi.isEmpty()) {
+            System.out.println("Nessun evento da visualizzare.");
+            return;
+        }
+        int scelta;
+        System.out.println("Seleziona l'evento da visualizzare:");
+        do {
+            System.out.print("-> ");
+            scelta = input.nextInt();
+            if (scelta < 1 || scelta > eventi.size()) {
+                System.out.println("Errore nell'inserimento, riprova");
+            }
+        } while (scelta < 1 || scelta > eventi.size());
+    }
+
 
     public static void gestioneEventi() { //entry point gestione eventi
         System.out.println("Esercizio gestione eventi");
@@ -227,8 +244,8 @@ public class GestioneEventi {
                     eliminaEvento();
                     break;
                 case 5:
-                    System.out.println("Fine programma");
-                    fine = true;
+                    System.out.println("Visualizzazione eventi");
+                    visualizzaEvento();
                     break;
                 default: System.out.println("Non hai inserto un'opzione valida.");
 
