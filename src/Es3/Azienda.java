@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Azienda {
 
-    private ArrayList<Risorsa> risorse = new ArrayList<>();
+    private final ArrayList<Risorsa> risorse = new ArrayList<>();
 
     public void aggiungiRisorsa(Risorsa r) {
         risorse.add(r);

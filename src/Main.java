@@ -1,5 +1,6 @@
 import Es1.GestioneEventi;
 import Es2.GestioneBiblioteche;
+import Es3.GestioneRisorse;
 import Global.Menu;
 
 import java.util.Scanner;
@@ -41,7 +42,8 @@ public class Main {
                     GestioneBiblioteche.gestioneBiblioteche();
                     break;
                 case 3:
-                    System.out.println("Esercizio gestione prodotti");
+                    System.out.println("Esercizio gestione azienda");
+                    GestioneRisorse.gestioneRisorseAzienda();
                     break;
                 case 4:
                     System.out.println("Esercizio gestione prenotazioni");

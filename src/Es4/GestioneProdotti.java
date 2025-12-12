@@ -24,51 +24,155 @@ prodotti venduti.
 • Aggiunga prodotti al supermercato e calcoli l'incasso totale.*/
 
 
-
 package Es4;
 
+import Es3.GestioneRisorse;
+import Es4.Models.*;
+import Global.GetLocalDate;
 import Global.Menu;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class GestioneProdotti {
+
     public static final Scanner input = new Scanner(System.in);
-    public static String[] opzionigestioneEventi = {
-            "Crea Concerto",
-            "Crea Conferenza",
-            "Crea Morstra Arte",
-            "Elimina Evento",
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public static final Supermercato s = new Supermercato();
+
+
+    private static final String[] opzioni = {
+            "Aggiungi prodotto alimentare",
+            "Aggiungi bevanda",
+            "Visualizza prodotti",
+            "Vendi prodotto",
+            "Mostra incasso totale",
             "Fine"
     };
 
-    public static void gestioneProdotti() { //entry point gestione eventi
-        System.out.println("Esercizio gestione prodotti");
-        boolean fine = false;
-        int choice = 0;
+    public static void aggiungiAlimentare() {
+        String nome;
+        double prezzo = -1;
+        int quantitaDisponibile = 0;
+        LocalDate scadenza;
 
+        System.out.println("Nome: ");
         do {
-            Menu.printMenu("Gestione Eventi Menu", opzionigestioneEventi);
-            switch (choice) {
-                case 1:
-                    System.out.println("Hai scelto ");
-                    break;
-                case 2:
-                    System.out.println("Hai scelto ");
-                    break;
-                case 3:
-                    System.out.println("Hai scelto ");
-                    break;
-                case 4:
-                    System.out.println("Hai scelto ");
-                    break;
-                case 5:
-                    System.out.println("Hai scelto ");
-                    break;
-                default: System.out.println("Non hai inserto un'opzione valida.");
-
-
+            System.out.print("-> ");
+            nome = input.next();
+            if (checkInput(nome)) {
+                System.out.println("Hai inserito un nome non valido. riprova.");
             }
-        } while (!fine);
+        } while (checkInput(nome));
+        System.out.println("Prezzo: ");
+        do {
+            System.out.print("-> ");
+            try {
+                prezzo = input.nextDouble();
+            } catch (Exception e) {
+                System.out.println("Errore nella lettura, riprova.");
+                input.nextLine();
+                continue;
+            }
+            if (prezzo <=0) {
+                System.out.println("Hai inserito un prezzo non valido, riprova.");
+            }
+        } while (prezzo <=0);
+        System.out.print("Quantità disponibile: ");
+        do {
+            System.out.print("-> ");
+            try {
+                quantitaDisponibile = input.nextInt();
+            } catch (Exception e) {
+                System.out.println("Errore nella lettura, riprova.");
+            }
+            if (quantitaDisponibile <=0) {
+                System.out.println("Valore non valido. riprova.");
+            }
+        } while (quantitaDisponibile <=0);
+        input.nextLine();
 
+        System.out.print("Data scadenza (dd/MM/yyyy): ");
+        scadenza = readDate();
+        s.aggiungiProdotto(new ProdottoAlimentare(nome, prezzo, quantitaDisponibile, scadenza));
     }
+
+    public static void gestioneProdotti() {
+
+        boolean fine = false;
+        while (!fine) {
+
+            Menu.printMenu("Gestione Prodotti Supermercato", opzioni);
+
+            int choice;
+            try {
+                choice = input.nextInt();
+            } catch (Exception e) {
+                input.nextLine();
+                System.out.println("Inserisci un intero valido.");
+                continue;
+            }
+            input.nextLine();
+
+            switch (choice) {
+
+                case 1:
+                    System.out.println("Aggiungi prodotto alimentare");
+                    break;
+
+                case 2:
+                    System.out.print("Nome: ");
+                    String nomeB = input.nextLine();
+                    System.out.print("Prezzo: ");
+                    double prezzoB = input.nextDouble();
+                    System.out.print("Quantità disponibile: ");
+                    int qB = input.nextInt();
+                    System.out.print("Volume in ml: ");
+                    int v = input.nextInt();
+                    input.nextLine();
+
+                    s.aggiungiProdotto(new ProdottoBevanda(nomeB, prezzoB, qB, v));
+                    break;
+
+                case 3:
+                    s.visualizzaProdotti();
+                    break;
+
+                case 4:
+                    s.visualizzaProdotti();
+                    System.out.print("Indice prodotto: ");
+                    int idx = input.nextInt();
+                    System.out.print("Quantità da vendere: ");
+                    int q = input.nextInt();
+                    input.nextLine();
+
+                    s.vendiProdotto(idx, q);
+                    break;
+
+                case 5:
+                    System.out.println("Incasso totale: " + s.calcolaIncassoTotale());
+                    break;
+
+                case 6:
+                    fine = true;
+                    break;
+
+                default:
+                    System.out.println("Opzione non valida.");
+            }
+        }
+    }
+
+    public static boolean checkInput(String input) {
+        return GestioneRisorse.checkInput(input); //Uso uno già esistente così non lo devo riscrivere
+    }
+
+    public static LocalDate readDate() {
+        return GetLocalDate.getLocalDateFuture(input);
+    }
+
+
 }
+

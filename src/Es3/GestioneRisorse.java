@@ -27,11 +27,15 @@ package Es3;
 
 import Es3.Models.*;
 import Global.Menu;
+
 import java.util.Scanner;
+import java.util.function.DoublePredicate;
+import java.util.function.Predicate;
 
 public class GestioneRisorse {
 
     public static final Scanner input = new Scanner(System.in);
+    public static final Azienda azienda = new Azienda();
 
     private static final String[] opzioni = {
             "Aggiungi Dipendente",
@@ -41,9 +45,59 @@ public class GestioneRisorse {
             "Fine"
     };
 
-    public static void gestioneRisorseAzienda() {
+    /*
+    * MI SONO ACCORTO DI QUANTI DO WHILE FACEVO, e che era possibile condensarli in dei metodi molto più semplici.
+    * quindi ho creato dei metodi generali per la lettura, che prendono come parametri:
+    *
+    * Il "prompt" ovvero l'azione da compiere (Inserisci nome/cognome/ecc)
+    * Il messaggio di errore generale
+    * E cosa controlla l'errore, che è il metodo "checkInput"
+    *
+    * Questo mi ha aiutato a imparare "Predictate" che non lo sapevo in java :)
+    *
+    * Infatti questo codice ora è molto più compatto. anche se FORSE era più leggibile tutti i do while.
+    * perchè si capiva molto meglio logicamente. ma per questo esercizio uno questo metodo qui così lo
+    * alleno un po.
+    * */
+    public static String readString(String prompt, String errorMessage, Predicate<String> validator) {
+        String value;
+        while (true) {
+            System.out.print(prompt);
+            value = input.nextLine();
+            if (validator.test(value)) return value;
+            System.out.println(errorMessage);
+        }
+    }
 
-        Azienda azienda = new Azienda();
+    public static double readDouble(String prompt, String errorMessage, DoublePredicate validator) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                double n = Double.parseDouble(input.nextLine());
+                if (validator.test(n)) return n;
+            } catch (Exception ignored) {}
+            System.out.println(errorMessage);
+        }
+    }
+
+    public static void aggiungiDipendente() {
+        String nome = readString("Nome -> ", "Nome non valido.", s -> !checkInput(s));
+        String cognome = readString("Cognome -> ", "Cognome non valido.", s -> !checkInput(s));
+        double retribuzioneBase = readDouble("Retribuzione base -> ", "Valore non valido.", n -> n > 0);
+
+        azienda.aggiungiRisorsa(new Dipendente(nome, cognome, retribuzioneBase));
+    }
+
+    public static void aggiungiManager() {
+        String nome = readString("Nome -> ", "Nome non valido.", s -> !checkInput(s));
+        String cognome = readString("Cognome -> ", "Cognome non valido.", s -> !checkInput(s));
+        double retribuzioneBase = readDouble("Retribuzione base -> ", "Valore non valido.", n -> n > 0);
+        double bonus = readDouble("Bonus -> ", "Valore non valido.", n -> n > 0);
+
+        azienda.aggiungiRisorsa(new Manager(nome, cognome, retribuzioneBase, bonus));
+    }
+
+    public static void gestioneRisorseAzienda() {
         boolean fine = false;
 
         while (!fine) {
@@ -51,43 +105,26 @@ public class GestioneRisorse {
 
             int choice;
             try {
-                choice = input.nextInt();
+                choice = Integer.parseInt(input.nextLine());
             } catch (Exception e) {
-                input.nextLine();
-                System.out.println("Inserisci un intero.");
+                System.out.println("Inserisci un intero valido.");
                 continue;
             }
-            input.nextLine();
 
             switch (choice) {
 
                 case 1:
-                    System.out.print("Nome: ");
-                    String nd = input.nextLine();
-                    System.out.print("Cognome: ");
-                    String cd = input.nextLine();
-                    System.out.print("Retribuzione base: ");
-                    double rb = input.nextDouble();
-                    input.nextLine();
-
-                    azienda.aggiungiRisorsa(new Dipendente(nd, cd, rb));
+                    System.out.println("Insrisci Dipendente");
+                    aggiungiDipendente();
                     break;
 
                 case 2:
-                    System.out.print("Nome: ");
-                    String nm = input.nextLine();
-                    System.out.print("Cognome: ");
-                    String cm = input.nextLine();
-                    System.out.print("Retribuzione base: ");
-                    double rbm = input.nextDouble();
-                    System.out.print("Bonus: ");
-                    double bonus = input.nextDouble();
-                    input.nextLine();
-
-                    azienda.aggiungiRisorsa(new Manager(nm, cm, rbm, bonus));
+                    System.out.println("Inserisci Manager");
+                    aggiungiManager();
                     break;
 
                 case 3:
+                    System.out.println("Visualizza Risorse");
                     azienda.visualizzaRisorse();
                     break;
 
@@ -96,6 +133,7 @@ public class GestioneRisorse {
                     break;
 
                 case 5:
+                    System.out.println("Fine Programma");
                     fine = true;
                     break;
 
@@ -104,5 +142,15 @@ public class GestioneRisorse {
             }
         }
     }
+
+    public static boolean checkInput(String input) {
+        if (input.length() < 3) return true;
+        for (int i = 0; i < input.length(); i++) {
+            if (!Character.isLetter(input.charAt(i))) return true;
+        }
+        return false;
+    }
+
 }
+
 

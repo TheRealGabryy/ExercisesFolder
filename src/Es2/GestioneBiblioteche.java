@@ -34,13 +34,12 @@ materiale.
 package Es2;
 
 import Es2.Models.*;
+import Global.GetLocalDate;
 import Global.Menu;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.Scanner;
+
 
 public class GestioneBiblioteche {
 
@@ -193,26 +192,7 @@ public class GestioneBiblioteche {
     }
 
     public static LocalDate readDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate today = LocalDate.now();
-
-        while (true) {
-            System.out.print("Inserisci una data (dd/MM/yyyy): ");
-            String data = input.nextLine();
-
-            try {
-                LocalDate date = LocalDate.parse(data, formatter);
-
-                if (date.isBefore(today)) {
-                    return date; // success
-                } else {
-                    System.out.println("La data deve essere precedente a oggi.");
-                }
-
-            } catch (DateTimeParseException e) {
-                System.out.println("Formato non valido. Riprova.");
-            }
-        }
+        return GetLocalDate.getLocalDate(input);
     }
 
 }
