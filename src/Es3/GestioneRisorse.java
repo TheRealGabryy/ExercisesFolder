@@ -25,54 +25,84 @@ retribuzioni di tutte le risorse.
 
 package Es3;
 
+import Es3.Models.*;
 import Global.Menu;
-
 import java.util.Scanner;
 
 public class GestioneRisorse {
+
     public static final Scanner input = new Scanner(System.in);
-    public static String[] opzionigestioneEventi = {
-            "Crea Concerto",
-            "Crea Conferenza",
-            "Crea Morstra Arte",
-            "Elimina Evento",
+
+    private static final String[] opzioni = {
+            "Aggiungi Dipendente",
+            "Aggiungi Manager",
+            "Visualizza risorse",
+            "Calcola totale stipendi",
             "Fine"
     };
 
-    public static void gestioneRisorseAzienda() { //entry point gestione eventi
-        System.out.println("Esercizio gestione <risorse dell'azienda");
-        boolean fine = false;
-        int choice = 0;
+    public static void gestioneRisorseAzienda() {
 
-        do {
-            Menu.printMenu("Gestione Eventi Menu", opzionigestioneEventi);
+        Azienda azienda = new Azienda();
+        boolean fine = false;
+
+        while (!fine) {
+            Menu.printMenu("Gestione Risorse Azienda", opzioni);
+
+            int choice;
             try {
                 choice = input.nextInt();
             } catch (Exception e) {
-                System.out.println("Non hai inserito un intero, santa giovanna martire");
                 input.nextLine();
+                System.out.println("Inserisci un intero.");
                 continue;
             }
+            input.nextLine();
+
             switch (choice) {
+
                 case 1:
-                    System.out.println("Hai scelto ");
+                    System.out.print("Nome: ");
+                    String nd = input.nextLine();
+                    System.out.print("Cognome: ");
+                    String cd = input.nextLine();
+                    System.out.print("Retribuzione base: ");
+                    double rb = input.nextDouble();
+                    input.nextLine();
+
+                    azienda.aggiungiRisorsa(new Dipendente(nd, cd, rb));
                     break;
+
                 case 2:
-                    System.out.println("Hai scelto ");
+                    System.out.print("Nome: ");
+                    String nm = input.nextLine();
+                    System.out.print("Cognome: ");
+                    String cm = input.nextLine();
+                    System.out.print("Retribuzione base: ");
+                    double rbm = input.nextDouble();
+                    System.out.print("Bonus: ");
+                    double bonus = input.nextDouble();
+                    input.nextLine();
+
+                    azienda.aggiungiRisorsa(new Manager(nm, cm, rbm, bonus));
                     break;
+
                 case 3:
-                    System.out.println("Hai scelto ");
+                    azienda.visualizzaRisorse();
                     break;
+
                 case 4:
-                    System.out.println("Hai scelto ");
+                    System.out.println("Totale stipendi: " + azienda.calcolaStipendioTotale());
                     break;
+
                 case 5:
-                    System.out.println("Hai scelto ");
+                    fine = true;
                     break;
-                default: System.out.println("Non hai inserto un'opzione valida.");
 
+                default:
+                    System.out.println("Opzione non valida.");
             }
-        } while (!fine);
-
+        }
     }
 }
+
