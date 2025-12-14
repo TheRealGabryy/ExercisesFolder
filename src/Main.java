@@ -1,6 +1,7 @@
 import Es1.GestioneEventi;
 import Es2.GestioneBiblioteche;
 import Es3.GestioneRisorse;
+import Es4.GestioneProdotti;
 import Global.Menu;
 
 import java.util.Scanner;
@@ -11,6 +12,7 @@ public class Main {
     public static final String[] mainOpzioni = {
             "Esercizio Eventi",
             "Gestione Biblioteca",
+            "Gestione Azienda",
             "Gestione Prodotti",
             "Gestione Prenotazioni",
             "Gestione Assistenti AI",
@@ -46,13 +48,15 @@ public class Main {
                     GestioneRisorse.gestioneRisorseAzienda();
                     break;
                 case 4:
-                    System.out.println("Esercizio gestione prenotazioni");
+                    System.out.println("Esercizio gestione prodotti");
+                    GestioneProdotti.gestioneProdotti();
+                    //TODO: Rifare gli input per le bevande. cje ora sono semplicemente nel case.
                     break;
                 case 5:
                     System.out.println("Esercizio gestione assistenti AI");
                     break;
                 case 6:
-                    System.out.println("Tutti gli esercizi uno dieto l'altro");
+                    System.out.println("Esercizio Gestione Assistenti");
                     break;
                 case 7:
                     System.out.println("Fine");
