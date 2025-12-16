@@ -28,7 +28,7 @@ public class GestioneProdotti {
 
     private static void aggiungiAlimentare() {
         String nome = readString("Nome");
-        double prezzo = readPositiveDouble("Prezzo");
+        double prezzo = readPositiveDouble();
         int quantita = readPositiveInt("Quantità disponibile");
         LocalDate scadenza = GetLocalDate.getLocalDateFuture(input);
 
@@ -39,7 +39,7 @@ public class GestioneProdotti {
 
     private static void aggiungiBevanda() {
         String nome = readString("Nome bevanda");
-        double prezzo = readPositiveDouble("Prezzo");
+        double prezzo = readPositiveDouble();
         int quantita = readPositiveInt("Quantità disponibile");
         int volume = readPositiveInt("Volume (ml)");
 
@@ -83,10 +83,10 @@ public class GestioneProdotti {
         return valore;
     }
 
-    private static double readPositiveDouble(String msg) {
+    private static double readPositiveDouble() {
         double valore = -1;
         do {
-            System.out.print(msg + " -> ");
+            System.out.print("Prezzo" + " -> ");
             try {
                 valore = Double.parseDouble(input.nextLine());
                 if (valore <= 0) {
